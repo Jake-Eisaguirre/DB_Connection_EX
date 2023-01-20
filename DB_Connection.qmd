@@ -1,0 +1,128 @@
+---
+title: "Database Tutorial"
+format: html
+editor: visual
+---
+
+## RIBBiTR Database Background
+
+Our RIBBITR data is stored in a PostgreSQL database, more commonly called "postgres". Postgres is a free and open source relational database management system (RDBMS). Postgres RDBMS began development in 1982 at UC Berkeley initially under the name Ingres. After many years of development the project ended and Postgres was released under an MIT License that allowed other developers to utilize the code (open source) and continue developing the code. Following this, many evolution's of the query language "SQL" where built. By 1997 PostgeSQL was released and SQL was deemed the unifying language for RDBMS style databases. To this day, developers around the world work to build upon the open source software of PostgreSQL and SQL to improve the software. Side note: RDBMS are one "flavor" of databases with new methods for data management systems being developed constantly, like "graph databases".
+
+Postges is considered a relational database management system (RDBMS) because each observation/row in a table contains a relationship to another observation/row in a different table. By maintaining relationships between data points you ensure the observations in that row will be joined correctly to each table. The rigid structure of the relationship between observations/rows from table to table is maintained through "primary keys" and "foreign keys". A primary key from one table will be joined to the foreign key of the other table in which each row/observation will than align correctly between the two tables. For example, if you did not have a RDBMS and you had a `wind_speed` table that contains columns for "site", "date", and "wind_speed" and a `water_temp` table containing columns for "site", "date", and "water_temp" .
+
+| site | date       | wind_speed |
+|------|------------|------------|
+| A    | 2022-01-03 | 22         |
+| B    | 2022-08-10 | 24         |
+| C    | 2022-05-07 | 36         |
+| A    | 2022-08-12 | 5          |
+| C    | 2022-09-14 | 12         |
+
+| site | date       | water_temp |
+|------|------------|------------|
+| A    | 2022-01-03 | 3          |
+| B    | 2022-08-10 | 6          |
+| C    | 2022-05-07 | 23         |
+| A    | 2022-08-12 | 18         |
+| C    | 2022-09-14 | 3          |
+
+Now say you wanted to join those two tables to have one table containing "site", "date", "wind_speed", and "water_temp" you would `water_wind <- left_join(water_temp, wind_speed, by = c("site", "date")` on the unique relationship of "site" and "date". Or in human speak, when site and date between the two tables equal each other place the "water_temp" row in the table. With a RDBMS the creation of primary and foreign keys maintains the unique relationship of "site" and "date" between the tables. 
+
+| site | date       | water_temp | wind_speed |
+|------|------------|------------|------------|
+| A    | 2022-01-03 | 3          | 22         |
+| B    | 2022-08-10 | 6          | 24         |
+| C    | 2022-05-07 | 23         | 36         |
+| A    | 2022-08-12 | 18         | 5          |
+| C    | 2022-09-14 | 3          | 12         |
+
+When looking at the `location` table and the `region` table in the RIBBiTR database we can see how the RDMS preserves the data and reduces space. We have three unique locations where data can be collected "panama", "brazil", and "usa" in which each of those locations can have many regions. For example, "usa" has regions of "california", "new_mexico", "vermount", "tennessee", "louisiana", and "pennsylvania". Through the use of primary and foreign keys we now know how to join those tables. And due to the primary and foreign keys we only need to maintain the unique sites and regions. This saves space by removing repeated values and preserves the data by only having one spelling of "usa". You could imagine with the above example, if sites had upper case and lower case spellings we could improperly join the data.
+
+**Location** table
+
+![](images/image-246242273.png)
+
+**Region** table
+
+![](images/image-1359522731.png)
+
+To join these two table we would join the `location` table primary key (location_id) to the `region` table foreign key (location_id). `location_region <- left_join(location, region, by = c("location_id")`
+
+![](images/image-2002484305.png)
+
+We can now see the location column populates the correct value where ever the primary key and foreign key equal each other or in other words, the location_id from both tables equal each other
+
+# How to Connect and Interact with the RIBBiTR Data Base
+
+## Neccesary Librarys
+
+```{r}
+#| output: false
+library(RPostgres)  # The database driver
+library(DBI)       # Functions needed to interact with the database
+library(tidyverse) # Functions needed for data wrangling and force of habbit to always 
+                   # include because tidyverse is life
+library(here)      # intuitive package for specifying files paths
+
+
+# The method below for calling in packages does the same as using `library` but will download any packages that are not initally downloaded. This is a cleaner method and more user friendly for sharing scripts between colleagues 
+
+if (!require(librarian)){
+  install.packages("librarian")
+  library(librarian)
+}
+# librarian downloads, if not already downloaded, and reads in needed packages
+librarian::shelf(tidyverse, here, RPostgres, DBI)
+
+```
+
+## Connecting 
+
+To connection to the database you will use `dbConnect` function from the `DBI` package. To connect to the database you will need the database driver/the flavor of database (`drv = dbDriver("Postgres")`), the database name (`dbname = "RIBBiTR"`), the host (`host = "localhost`), port (`port = "5432"`), your username, and password. Note, these values will change once the database is migrated to a server **UPDATE**. I strongly reccomend not storing `user` and `password` info with in your script. A secure method for storing this info is in your `.Renviron` file that is stored locally on your device and never pushed to github. To edit your `.Renviron` file run this: `usethis::edit_r_environ()` and the file will open. Populate the file based on the sample below, hit save, and restart your R session. You can then use `Sys.getenv()` to call on those variables stored locally on your device.
+
+```{r}
+# sample .Renviron file #
+dbname = "RIBBiTR"
+host = "localhost"
+port = "5432"
+user = "username" # you will input your own username
+password = "password" # you will input your own password
+
+
+# connecting to RIBBiTR Database
+ribbitr_connection <- dbConnect(drv = dbDriver("Postgres"),
+                                dbname = "RIBBiTR",
+                                host = "localhost",
+                                port = "5432",
+                                user = Sys.getenv("user"),
+                                password = Sys.getenv("password"))
+
+   
+              
+# Same method for connecting to RIBBiTR databse but will give feedback, I recommend copying this
+
+tryCatch({
+  
+    print("Connecting to Database…")
+  
+    ribbitr_connection <- dbConnect(drv = dbDriver("Postgres"),
+                                    dbname = "RIBBiTR",
+                                    host = "localhost",
+                                    port = "5432",
+                                    user = Sys.getenv("user"),
+                                    password = Sys.getenv("password"))
+    
+    print("Database Connected!")
+    },
+    
+    error=function(cond) {
+            print("Unable to connect to Database.")
+    })
+
+
+
+```
+
+## Interacting
+
+Now you should be connected to the RIBBiTR database with in RStudio. Interacting with the database through R will involve learning some SQL. Don't stress, SQL is a very intuitive and straight forward language.
