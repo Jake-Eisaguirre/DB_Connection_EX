@@ -63,11 +63,8 @@ Now if we zoom out and look at the entire structure of the `survey_data` schema 
 ```{r}
 #| output: false
 library(RPostgres)  # The database driver
-library(DBI)       # Functions needed to interact with the database
-library(tidyverse) # Functions needed for data wrangling and force of habbit to always 
-                   # include because tidyverse is life
-library(here)      # intuitive package for specifying files paths
-
+library(DBI)        # Functions needed to interact with the database
+library(rstudioapi) # Package that asked for credentials 
 
 # The method below for calling in packages does the same as using `library` but will download any packages that are not initally downloaded. This is a cleaner method and more user friendly for sharing scripts between colleagues 
 
@@ -76,13 +73,13 @@ if (!require(librarian)){
   library(librarian)
 }
 # librarian downloads, if not already downloaded, and reads in needed packages
-librarian::shelf(tidyverse, here, RPostgres, DBI)
+librarian::shelf(RPostgres, DBI, rstudioapi)
 
 ```
 
 ## Connecting 
 
-To connection to the database you will use `dbConnect` function from the `DBI` package. To connect to the database you will need the database driver/the flavor of database (`drv = dbDriver("Postgres")`), the database name (`dbname = "RIBBiTR"`), the host (`host = "localhost`), port (`port = "5432"`), your username, and password. Note, these values will change once the database is migrated to a server **UPDATE**. I strongly reccomend not storing `user` and `password` info with in your script. A secure method for storing this info is in your `.Renviron` file that is stored locally on your device and never pushed to github. To edit your `.Renviron` file run this: `usethis::edit_r_environ()` and the file will open. Populate the file based on the sample below, hit save, and restart your R session. You can then use `Sys.getenv()` to call on those variables stored locally on your device.
+To connect to the database you will use `dbConnect` function from the `DBI` package. You will need the database driver/the flavor of database (`drv = dbDriver("Postgres")`), the database name (`dbname = "RIBBiTR"`), the host (`host = "localhost`), port (`port = "5432"`), your username, and password. Note, these values will change once the database is migrated to a server **UPDATE**. I strongly recommend not storing `user` and `password` info with in your script. A secure method for storing this info is in your `.Renviron` file that is stored locally on your device and will never be pushed to github. To edit your `.Renviron` file run this: `usethis::edit_r_environ()` and the file will open. Populate the file based on the sample below, hit save, and restart your R session. You can then use `Sys.getenv()` to call on those variables stored locally on your device. Another method is to use the `rstudioapi` with the a`skForPassword` function. A log in box will appear after running the `dbConnect`.
 
 Once you have connected to the database it is important to `set search_path` to the appropriate database schema of interest. This is identical to setting your working directory but for databases. To set search path we will use `dbSendQuery` in the `DBI` package. You will tell the `dbSendQuery` the connection and the SQL statement that points to the schema. Note, you must use single quotes around the schema of choice `dbSendQuery(conn = ribbitr_connection, "set search_path = 'survey_data'")`
 
@@ -100,8 +97,8 @@ ribbitr_connection <- dbConnect(drv = dbDriver("Postgres"),
                                 dbname = "RIBBiTR",
                                 host = "localhost",
                                 port = "5432",
-                                user = Sys.getenv("user"),
-                                password = Sys.getenv("password"))
+                                user = askForPassword("user name"),
+                                password = askForPassword("password"))
 
    
               
@@ -153,7 +150,7 @@ location <- dbGetQuery(conn = ribbitr_connection,
 
 # location and region table joined
 
-# human speak: "select the location column from the location table and the region column from                 the region table then join region onto the location when location table                        location_id equal the region table location_id."
+# human speak: "select the location column from the location table and the region column from                 the region table then join region onto the location when location table                        location_id equals the region table location_id."
 
 # note, if you want to select specific columns from a table you must start with table alias, that being either "l" for location or "r" for region. 
 sql_statement <- "select l.location, r.region 
@@ -164,9 +161,11 @@ location_region <- dbGetQuery(conn = ribbitr_connection,
                               statement = sql_statement)
 
 
-# all data to the capture level - I do not reccomend this query as there is a lot of wasted columns
+# picking columns of interest from each table and join all tables together. Try to always select specific columns of interest from each table.
 
-sql_statement <- "select l.*, r.*, s.*, v.*, su.*, c.*
+sql_statement <- "select l.location, r.region, s.site, s.utme, s.utmn, s.utm_zone
+                  v.date, v.survey_time, su.start_time, su.end_time, su.duration_minutes,
+                  c.species_capture, c.time_of_capture, c.body_temp_c, c.svl_mm, c.sex
                   from location l
                   join region r on l.location_id = r.location_id 
                   join site s on r.region_id = s.region_id 
@@ -174,7 +173,7 @@ sql_statement <- "select l.*, r.*, s.*, v.*, su.*, c.*
                   join survey su on v.visit_id = su.visit_id 
                   join capture c on su.survey_id = c.survey_id;"
 
-all_capture_data <- dbGetQuery(conn = ribbitr_connection, 
+capture_data <- dbGetQuery(conn = ribbitr_connection, 
                               statement = sql_statement)
 
 ```
@@ -191,4 +190,17 @@ from location
 
 ```
 
-### 
+```{sql, connection = ribbitr_connection, output.var = location_region}
+
+select l.location, r.region, s.site, s.utme, s.utmn, s.utm_zone,
+v.date, v.survey_time, su.start_time, su.end_time, su.duration_minutes,
+c.species_capture, c.time_of_capture, c.body_temp_c, c.svl_mm, c.sex
+
+from location l
+
+join region r on l.location_id = r.location_id 
+join site s on r.region_id = s.region_id 
+join visit v on s.site_id = v.site_id 
+join survey su on v.visit_id = su.visit_id 
+join capture c on su.survey_id = c.survey_id;
+```
