@@ -36,7 +36,7 @@ Now say you wanted to join those two tables to have one table containing "site",
 | A    | 2022-08-12 | 18         | 5          |
 | C    | 2022-09-14 | 3          | 12         |
 
-When looking at the `location` table and the `region` table in the RIBBiTR database we can see how the RDMS preserves the data and reduces space. We have three unique locations where data can be collected "panama", "brazil", and "usa" in which each of those locations can have many regions. For example, "usa" has regions of "california", "new_mexico", "vermount", "tennessee", "louisiana", and "pennsylvania". Through the use of primary and foreign keys we now know how to join those tables. And due to the primary and foreign keys we only need to maintain the unique sites and regions. This saves space by removing repeated values and preserves the data by only having one spelling of "usa". You could imagine with the above example, if sites had upper case and lower case spellings we could improperly join the data.
+When looking at the `location` table and the `region` table within the `survey_data` schema in the RIBBiTR database we can see how the RDMS preserves the data and reduces space. We have three unique locations where data can be collected "panama", "brazil", and "usa" in which each of those locations can have many regions. For example, "usa" has regions of "california", "new_mexico", "vermount", "tennessee", "louisiana", and "pennsylvania". Through the use of primary and foreign keys we now know how to join those tables. And due to the primary and foreign keys we only need to maintain the unique sites and regions. This saves space by removing repeated values and preserves the data by only having one spelling of "usa". You could imagine with the above example, if sites had upper case and lower case spellings we could improperly join the data.
 
 **Location** table
 
@@ -50,7 +50,11 @@ To join these two table we would join the `location` table primary key (location
 
 ![](images/image-2002484305.png)
 
-We can now see the location column populates the correct value where ever the primary key and foreign key equal each other or in other words, the location_id from both tables equal each other
+We can now see the location column populates the correct value where ever the primary key and foreign key equal each other or in other words, the location_id from both tables equal each other.
+
+Now if we zoom out and look at the entire structure of the `survey_data` schema we can see all the interconnected relationships built between the tables through primary keys and foreign keys. If there is a line connecting the tables we know the same structure follows/trickles through the schema with preserving space and data. Take a look at [ribbitr_schema.pdf](https://drive.google.com/drive/folders/1KBkHAjwyaCufJpM1qbcyN6F-pd_uJpxU) for more info on each schema.
+
+![](images/image-1826824745.png)
 
 # How to Connect and Interact with the RIBBiTR Data Base
 
@@ -79,6 +83,8 @@ librarian::shelf(tidyverse, here, RPostgres, DBI)
 ## Connecting 
 
 To connection to the database you will use `dbConnect` function from the `DBI` package. To connect to the database you will need the database driver/the flavor of database (`drv = dbDriver("Postgres")`), the database name (`dbname = "RIBBiTR"`), the host (`host = "localhost`), port (`port = "5432"`), your username, and password. Note, these values will change once the database is migrated to a server **UPDATE**. I strongly reccomend not storing `user` and `password` info with in your script. A secure method for storing this info is in your `.Renviron` file that is stored locally on your device and never pushed to github. To edit your `.Renviron` file run this: `usethis::edit_r_environ()` and the file will open. Populate the file based on the sample below, hit save, and restart your R session. You can then use `Sys.getenv()` to call on those variables stored locally on your device.
+
+Once you have connected to the database it is important to `set search_path` to the appropriate database schema of interest. This is identical to setting your working directory but for databases. To set search path we will use `dbSendQuery` in the `DBI` package. You will tell the `dbSendQuery` the connection and the SQL statement that points to the schema. Note, you must use single quotes around the schema of choice `dbSendQuery(conn = ribbitr_connection, "set search_path = 'survey_data'")`
 
 ```{r}
 # sample .Renviron file #
@@ -120,9 +126,69 @@ tryCatch({
     })
 
 
+# setting your search path
+dbSendQuery(conn = ribbitr_connection, 
+            statement = "set search_path = 'survey_data'")
 
 ```
 
 ## Interacting
 
-Now you should be connected to the RIBBiTR database with in RStudio. Interacting with the database through R will involve learning some SQL. Don't stress, SQL is a very intuitive and straight forward language.
+Now you should be connected to the RIBBiTR with in RStudio and working with in the 'survey_data' schema. Interacting with the database through R will involve learning some SQL. Don't stress, SQL is a very intuitive and straight forward language. A more thorough SQL tutorial will follow and please do not hesitate to reach out for help with developing queries. I will now show two methods in how one can query the database.
+
+### dbQetQuery
+
+Using `dbQetQuery` in the `DBI` package we can feed the function our database connection `conn = ribbitr_connection` and then the SQL `statement =`. Note, the `*` symbol in SQL is equivalent as saying "everything" and in R that is `.`
+
+```{r}
+
+# location table only
+
+# human speak: "select everthing from the location table"
+sql_statement <- "select * from location"
+
+location <- dbGetQuery(conn = ribbitr_connection, 
+                       statement = sql_statement)
+
+
+# location and region table joined
+
+# human speak: "select the location column from the location table and the region column from                 the region table then join region onto the location when location table                        location_id equal the region table location_id."
+
+# note, if you want to select specific columns from a table you must start with table alias, that being either "l" for location or "r" for region. 
+sql_statement <- "select l.location, r.region 
+                  from location l
+                  join region r on l.location_id = r.location_id"
+
+location_region <- dbGetQuery(conn = ribbitr_connection, 
+                              statement = sql_statement)
+
+
+# all data to the capture level - I do not reccomend this query as there is a lot of wasted columns
+
+sql_statement <- "select l.*, r.*, s.*, v.*, su.*, c.*
+                  from location l
+                  join region r on l.location_id = r.location_id 
+                  join site s on r.region_id = s.region_id 
+                  join visit v on s.site_id = v.site_id 
+                  join survey su on v.visit_id = su.visit_id 
+                  join capture c on su.survey_id = c.survey_id;"
+
+all_capture_data <- dbGetQuery(conn = ribbitr_connection, 
+                              statement = sql_statement)
+
+```
+
+### Entire SQL Code Chunk
+
+If you are using a Quarto or RMarkdown document with code chunks you can specify in the code chunk that you will be using SQL, the database connection, and what you want the output variable to be.
+
+```{sql, connection = ribbitr_connection, output.var = location_region}
+
+select *
+from location
+
+
+```
+
+### 
