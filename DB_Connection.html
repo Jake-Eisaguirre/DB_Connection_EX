@@ -100,33 +100,63 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 </head>
 
-<body class="fullcontent">
+<body>
 
-<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
-
-<main class="content" id="quarto-document-content">
-
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
-<h1 class="title">Database Tutorial</h1>
-</div>
-
-
-
-<div class="quarto-title-meta">
-
-    
-  
-    
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Database Tutorial</h1>
+                      </div>
   </div>
+    
   
+  <div class="quarto-title-meta">
 
-</header>
+      
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#ribbitr-database-background" id="toc-ribbitr-database-background" class="nav-link active" data-scroll-target="#ribbitr-database-background">RIBBiTR Database Background</a>
+  <ul class="collapse">
+  <li><a href="#non-rdbms-example" id="toc-non-rdbms-example" class="nav-link" data-scroll-target="#non-rdbms-example">Non-RDBMS Example</a></li>
+  <li><a href="#rdms-example" id="toc-rdms-example" class="nav-link" data-scroll-target="#rdms-example">RDMS Example</a></li>
+  </ul></li>
+  <li><a href="#how-to-connect-and-interact-with-the-ribbitr-data-base" id="toc-how-to-connect-and-interact-with-the-ribbitr-data-base" class="nav-link" data-scroll-target="#how-to-connect-and-interact-with-the-ribbitr-data-base">How to Connect and Interact with the RIBBiTR Data Base</a>
+  <ul class="collapse">
+  <li><a href="#necessary-librarys" id="toc-necessary-librarys" class="nav-link" data-scroll-target="#necessary-librarys">Necessary Library’s</a></li>
+  <li><a href="#connecting" id="toc-connecting" class="nav-link" data-scroll-target="#connecting">Connecting</a>
+  <ul class="collapse">
+  <li><a href="#sample-.renviron-file-and-database-connection" id="toc-sample-.renviron-file-and-database-connection" class="nav-link" data-scroll-target="#sample-.renviron-file-and-database-connection">Sample .Renviron file and Database Connection</a></li>
+  </ul></li>
+  <li><a href="#interacting" id="toc-interacting" class="nav-link" data-scroll-target="#interacting">Interacting</a>
+  <ul class="collapse">
+  <li><a href="#dbqetquery" id="toc-dbqetquery" class="nav-link" data-scroll-target="#dbqetquery">dbQetQuery</a></li>
+  <li><a href="#entire-sql-code-chunk" id="toc-entire-sql-code-chunk" class="nav-link" data-scroll-target="#entire-sql-code-chunk">Entire SQL Code Chunk</a></li>
+  </ul></li>
+  </ul></li>
+  </ul>
+</nav>
+</div>
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
 
 <section id="ribbitr-database-background" class="level2">
 <h2 class="anchored" data-anchor-id="ribbitr-database-background">RIBBiTR Database Background</h2>
-<p>Our RIBBITR data is stored in a PostgreSQL database, more commonly called “postgres”. Postgres is a free and open source relational database management system (RDBMS). Postgres RDBMS began development in 1982 at UC Berkeley initially under the name Ingres. After many years of development the project ended and Postgres was released under an MIT License that allowed other developers to utilize the code (open source) and continue developing the code. Following this, many evolution’s of the query language “SQL” where built. By 1997 PostgeSQL was released and SQL was deemed the unifying language for RDBMS style databases. To this day, developers around the world work to build upon the open source software of PostgreSQL and SQL to improve the software. Side note: RDBMS are one “flavor” of databases with new methods for data management systems being developed constantly, like “graph databases”.</p>
-<p>Postges is considered a relational database management system (RDBMS) because each observation/row in a table contains a relationship to another observation/row in a different table. By maintaining relationships between data points you ensure the observations in that row will be joined correctly to each table. The rigid structure of the relationship between observations/rows from table to table is maintained through “primary keys” and “foreign keys”. A primary key from one table will be joined to the foreign key of the other table in which each row/observation will than align correctly between the two tables. For example, if you did not have a RDBMS and you had a <code>wind_speed</code> table that contains columns for “site”, “date”, and “wind_speed” and a <code>water_temp</code> table containing columns for “site”, “date”, and “water_temp” .</p>
+<p>Our RIBBITR data is stored in a PostgreSQL database, more commonly called “postgres”. Postgres is a free and open source relational database management system (RDBMS). Postgres RDBMS began development in 1982 at UC Berkeley initially under the name Ingres. After many years of development the project ended and Postgres was released under an MIT License that allowed other developers to utilize the code (open source) and continue developing the code. Following this, many evolution’s of the query language “SQL” occured. By 1997 PostgeSQL was released and SQL was deemed the unifying language for RDBMS style databases. To this day, developers around the world work to build upon the open source software of PostgreSQL and SQL to improve the software. Side note: RDBMS are one “flavor” of databases with new methods for data management systems being developed constantly, like “graph databases”.</p>
+<p>Postges is considered a relational database management system (RDBMS) because each observation/row in a table contains a relationship to another observation/row in a different table. By maintaining relationships between data points you ensure the observations in that row will be joined correctly to each table. The rigid structure of the relationship between observations/rows from table to table is maintained through <code>primary keys</code> and <code>foreign keys</code>. A <code>primary key</code> from one table will be joined to the <code>foreign key</code> of the other table in which each row/observation will than align correctly between the two tables.</p>
+<section id="non-rdbms-example" class="level3">
+<h3 class="anchored" data-anchor-id="non-rdbms-example">Non-RDBMS Example</h3>
+<p>For example, if you did not have a RDBMS and you had a <code>wind_speed</code> table that contains columns for “site”, “date”, and “wind_speed” and a <code>water_temp</code> table containing columns for “site”, “date”, and “water_temp” .</p>
 <table class="table">
 <thead>
 <tr class="header">
@@ -199,7 +229,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </tr>
 </tbody>
 </table>
-<p>Now say you wanted to join those two tables to have one table containing “site”, “date”, “wind_speed”, and “water_temp” you would <code>water_wind &lt;- left_join(water_temp, wind_speed, by = c("site", "date")</code> on the unique relationship of “site” and “date”. Or in human speak, when site and date between the two tables equal each other place the “water_temp” row in the table. With a RDBMS the creation of primary and foreign keys maintains the unique relationship of “site” and “date” between the tables.</p>
+<p>Now say you wanted to join those two tables to have one table containing “site”, “date”, “wind_speed”, and “water_temp” you would <code>water_wind &lt;- left_join(water_temp, wind_speed, by = c("site", "date")</code> on the unique relationship of “site” and “date”. Or in human speak, when site and date between the two tables equal each other place the “water_temp” row in the table. With a RDBMS the creation of primary and foreign keys maintains the unique relationship of “site” and “date” between the two tables.</p>
 <table class="table">
 <thead>
 <tr class="header">
@@ -242,91 +272,173 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </tr>
 </tbody>
 </table>
-<p>When looking at the <code>location</code> table and the <code>region</code> table in the RIBBiTR database we can see how the RDMS preserves the data and reduces space. We have three unique locations where data can be collected “panama”, “brazil”, and “usa” in which each of those locations can have many regions. For example, “usa” has regions of “california”, “new_mexico”, “vermount”, “tennessee”, “louisiana”, and “pennsylvania”. Through the use of primary and foreign keys we now know how to join those tables. And due to the primary and foreign keys we only need to maintain the unique sites and regions. This saves space by removing repeated values and preserves the data by only having one spelling of “usa”. You could imagine with the above example, if sites had upper case and lower case spellings we could improperly join the data.</p>
+</section>
+<section id="rdms-example" class="level3">
+<h3 class="anchored" data-anchor-id="rdms-example">RDMS Example</h3>
+<p>When looking at the <code>location</code> table and the <code>region</code> table within the <code>survey_data</code> schema in the RIBBiTR database we can see how the RDMS preserves the data and reduces space. We have three unique locations where data can be collected “panama”, “brazil”, and “usa” in which each of those locations can have many regions. For example, “usa” has regions of “california”, “new_mexico”, “vermount”, “tennessee”, “louisiana”, and “pennsylvania”. Through the use of primary and foreign keys we now know how to join those tables. And due to the primary and foreign keys we only need to maintain the unique sites and regions. This saves space by removing repeated values and preserves the data by only having one spelling of “usa”. You could imagine with the above example, if sites had upper case and lower case spellings we could improperly join the data.</p>
 <p><strong>Location</strong> table</p>
 <p><img src="images/image-246242273.png" class="img-fluid"></p>
 <p><strong>Region</strong> table</p>
 <p><img src="images/image-1359522731.png" class="img-fluid"></p>
-<p>To join these two table we would join the <code>location</code> table primary key (location_id) to the <code>region</code> table foreign key (location_id). <code>location_region &lt;- left_join(location, region, by = c("location_id")</code></p>
+<p>To join these two table we would join the <code>location</code> table primary key (location_id) to the <code>region</code> table foreign key (location_id). In RStudio, <code>location_region &lt;- left_join(location, region, by = c("location_id")</code></p>
 <p><img src="images/image-2002484305.png" class="img-fluid"></p>
-<p>We can now see the location column populates the correct value where ever the primary key and foreign key equal each other or in other words, the location_id from both tables equal each other</p>
+<p>We can now see the location column populates the correct value where ever the primary key and foreign key equal each other or in other words, the location_id from both tables equal each other.</p>
+<p>Now if we zoom out and look at the entire structure of the <code>survey_data</code> schema we can see all the interconnected relationships built between the tables through primary keys and foreign keys. If there is a line connecting the tables we know the same structure follows/trickles through the schema with preserving space and data. Take a look at <a href="https://drive.google.com/drive/folders/1KBkHAjwyaCufJpM1qbcyN6F-pd_uJpxU">ribbitr_schema.pdf</a> for more info on each schema.</p>
+<p><img src="images/image-1826824745.png" class="img-fluid"></p>
+</section>
 </section>
 <section id="how-to-connect-and-interact-with-the-ribbitr-data-base" class="level1">
 <h1>How to Connect and Interact with the RIBBiTR Data Base</h1>
-<section id="neccesary-librarys" class="level2">
-<h2 class="anchored" data-anchor-id="neccesary-librarys">Neccesary Librarys</h2>
+<section id="necessary-librarys" class="level2">
+<h2 class="anchored" data-anchor-id="necessary-librarys">Necessary Library’s</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(RPostgres)  <span class="co"># The database driver</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DBI)       <span class="co"># Functions needed to interact with the database</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse) <span class="co"># Functions needed for data wrangling and force of habbit to always </span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>                   <span class="co"># include because tidyverse is life</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)      <span class="co"># intuitive package for specifying files paths</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DBI)        <span class="co"># Functions needed to interact with the database</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rstudioapi) <span class="co"># Package that asked for credentials </span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># The method below for calling in packages does the same as using `library` but will download any packages that are not initally downloaded. This is a cleaner method and more user friendly for sharing scripts between colleagues </span></span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># The method below for calling in packages does the same as using `library` but will download any packages that are not initally downloaded. This is a cleaner method and more user friendly for sharing scripts between colleagues </span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">require</span>(librarian)){</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">install.packages</span>(<span class="st">"librarian"</span>)</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(librarian)</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co"># librarian downloads, if not already downloaded, and reads in needed packages</span></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>librarian<span class="sc">::</span><span class="fu">shelf</span>(tidyverse, here, RPostgres, DBI)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">require</span>(librarian)){</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">install.packages</span>(<span class="st">"librarian"</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(librarian)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co"># librarian downloads, if not already downloaded, and reads in needed packages</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>librarian<span class="sc">::</span><span class="fu">shelf</span>(RPostgres, DBI, rstudioapi)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="connecting" class="level2">
 <h2 class="anchored" data-anchor-id="connecting">Connecting</h2>
-<p>To connection to the database you will use <code>dbConnect</code> function from the <code>DBI</code> package. To connect to the database you will need the database driver/the flavor of database (<code>drv = dbDriver("Postgres")</code>), the database name (<code>dbname = "RIBBiTR"</code>), the host (<code>host = "localhost</code>), port (<code>port = "5432"</code>), your username, and password. Note, these values will change once the database is migrated to a server <strong>UPDATE</strong>. I strongly reccomend not storing <code>user</code> and <code>password</code> info with in your script. A secure method for storing this info is in your <code>.Renviron</code> file that is stored locally on your device and never pushed to github. To edit your <code>.Renviron</code> file run this: <code>usethis::edit_r_environ()</code> and the file will open. Populate the file based on the sample below, hit save, and restart your R session. You can then use <code>Sys.getenv()</code> to call on those variables stored locally on your device.</p>
+<p>To connect to the database you will use <code>dbConnect</code> function from the <code>DBI</code> package. You will need the</p>
+<ul>
+<li><p>database driver: <code>drv = dbDriver("Postgres")</code>,</p></li>
+<li><p>the database name: <code>dbname = "ribbitr"</code>,</p></li>
+<li><p>the host: <code>host = "ribbitr.c6p56tuocn5n.us-west-1.rds.amazonaws.com"</code>,</p></li>
+<li><p>port: <code>port = "5432"</code>,</p></li>
+<li><p>your username: <code>user = "&lt;insert_username&gt;"</code></p></li>
+<li><p>and password: <code>password = "&lt;insert_password&gt;"</code></p></li>
+</ul>
+<p>I strongly recommend not storing <code>user</code> and <code>password</code> , or any database info with in your script. A secure method for storing this info is in your <code>.Renviron</code> file that is stored locally on your device and will never be pushed to github. To edit your <code>.Renviron</code> file run this in the console: <code>usethis::edit_r_environ()</code> and the file will open. Populate the file based on the sample below, hit save, and restart your R session. You can then use <code>Sys.getenv()</code> to call on those variables stored locally on your device. Another method is to use the <code>rstudioapi</code> package with the <code>askForPassword()</code> function. Replace <code>Sys.getenv()</code> with <code>askForPassword()</code>. A log in box will appear after running the <code>dbConnect</code>.</p>
+<p>Once you have connected to the database it is important to <code>set search_path</code> to the appropriate database schema of interest. This is identical to setting your working directory but for databases. To set search path we will use <code>dbSendQuery</code> in the <code>DBI</code> package. You will tell the <code>dbSendQuery</code> the connection and the SQL statement that points to the schema. Note, you must use single quotes around the schema of choice <code>dbSendQuery(conn = ribbitr_connection, "set search_path = 'survey_data'")</code></p>
+<section id="sample-.renviron-file-and-database-connection" class="level3">
+<h3 class="anchored" data-anchor-id="sample-.renviron-file-and-database-connection">Sample .Renviron file and Database Connection</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># sample .Renviron file #</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>dbname <span class="ot">=</span> <span class="st">"RIBBiTR"</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>host <span class="ot">=</span> <span class="st">"localhost"</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>port <span class="ot">=</span> <span class="st">"5432"</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>user <span class="ot">=</span> <span class="st">"username"</span> <span class="co"># you will input your own username</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>password <span class="ot">=</span> <span class="st">"password"</span> <span class="co"># you will input your own password</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co"># connecting to RIBBiTR Database</span></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>ribbitr_connection <span class="ot">&lt;-</span> <span class="fu">dbConnect</span>(<span class="at">drv =</span> <span class="fu">dbDriver</span>(<span class="st">"Postgres"</span>),</span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>                                <span class="at">dbname =</span> <span class="st">"RIBBiTR"</span>,</span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>                                <span class="at">host =</span> <span class="st">"localhost"</span>,</span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>                                <span class="at">port =</span> <span class="st">"5432"</span>,</span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>                                <span class="at">user =</span> <span class="fu">Sys.getenv</span>(<span class="st">"user"</span>),</span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>                                <span class="at">password =</span> <span class="fu">Sys.getenv</span>(<span class="st">"password"</span>))</span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>   </span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>              </span>
-<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Same method for connecting to RIBBiTR databse but will give feedback, I recommend copying this</span></span>
-<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="fu">tryCatch</span>({</span>
-<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">print</span>(<span class="st">"Connecting to Database…"</span>)</span>
-<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>    ribbitr_connection <span class="ot">&lt;-</span> <span class="fu">dbConnect</span>(<span class="at">drv =</span> <span class="fu">dbDriver</span>(<span class="st">"Postgres"</span>),</span>
-<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">dbname =</span> <span class="st">"RIBBiTR"</span>,</span>
-<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">host =</span> <span class="st">"localhost"</span>,</span>
-<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">port =</span> <span class="st">"5432"</span>,</span>
-<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">user =</span> <span class="fu">Sys.getenv</span>(<span class="st">"user"</span>),</span>
-<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">password =</span> <span class="fu">Sys.getenv</span>(<span class="st">"password"</span>))</span>
-<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>    <span class="fu">print</span>(<span class="st">"Database Connected!"</span>)</span>
-<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>    },</span>
-<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">error=</span><span class="cf">function</span>(cond) {</span>
-<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>            <span class="fu">print</span>(<span class="st">"Unable to connect to Database."</span>)</span>
-<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>    })</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] "Connecting to Database…"
-[1] "Database Connected!"</code></pre>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1) run this in the console: "usethis::edit_r_environ()"</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 2) copy the sample below and input your own username and password.</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 3) Save and restart your r sessio. Click "session" at the top and "Restart R".</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co"># sample .Renviron file #</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>dbname <span class="ot">=</span> <span class="st">"ribbitr"</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>host <span class="ot">=</span> <span class="st">"ribbitr.c6p56tuocn5n.us-west-1.rds.amazonaws.com"</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>port <span class="ot">=</span> <span class="st">"5432"</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>user <span class="ot">=</span> <span class="st">"username"</span> <span class="co"># you will input your own username</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>password <span class="ot">=</span> <span class="st">"password"</span> <span class="co"># you will input your own password</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="co"># connecting to RIBBiTR Database</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>ribbitr_connection <span class="ot">&lt;-</span> <span class="fu">dbConnect</span>(<span class="at">drv =</span> <span class="fu">dbDriver</span>(<span class="st">"Postgres"</span>),</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>                                <span class="at">dbname =</span> <span class="st">"ribbitr"</span>,</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>                                <span class="at">host =</span> <span class="st">"ribbitr.c6p56tuocn5n.us-west-1.rds.amazonaws.com"</span>,</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>                                <span class="at">port =</span> <span class="st">"5432"</span>,</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>                                <span class="at">user =</span> <span class="fu">Sys.getenv</span>(<span class="st">"aws_user"</span>),</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>                                <span class="at">password =</span> <span class="fu">Sys.getenv</span>(<span class="st">"aws_password"</span>))</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>   </span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>              </span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Same method for connecting to RIBBiTR databse but will give feedback, I recommend copying this</span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a><span class="fu">tryCatch</span>({</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>    <span class="fu">print</span>(<span class="st">"Connecting to Database…"</span>)</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>    ribbitr_connection <span class="ot">&lt;-</span> <span class="fu">dbConnect</span>(<span class="at">drv =</span> <span class="fu">dbDriver</span>(<span class="st">"Postgres"</span>),</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">dbname =</span> <span class="st">"ribbitr"</span>,</span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">host =</span> <span class="st">"ribbitr.c6p56tuocn5n.us-west-1.rds.amazonaws.com"</span>,</span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">port =</span> <span class="st">"5432"</span>,</span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">user =</span> <span class="fu">askForPassword</span>(<span class="st">"user"</span>),</span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">password =</span> <span class="fu">askForPassword</span>(<span class="st">"password"</span>))</span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>    <span class="fu">print</span>(<span class="st">"Database Connected!"</span>)</span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>    },</span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>    <span class="at">error=</span><span class="cf">function</span>(cond) {</span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>            <span class="fu">print</span>(<span class="st">"Unable to connect to Database."</span>)</span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>    })</span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a><span class="co"># setting your search path</span></span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a><span class="fu">dbSendQuery</span>(<span class="at">conn =</span> ribbitr_connection, </span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a>            <span class="at">statement =</span> <span class="st">"set search_path = 'survey_data'"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</div>
-<p>You can add options to executable code like this</p>
+</section>
+</section>
+<section id="interacting" class="level2">
+<h2 class="anchored" data-anchor-id="interacting">Interacting</h2>
+<p>Now you should be connected to the <code>ribbitr</code> database with in RStudio and working with in the <code>survey_data</code> schema. Interacting with the database through R will involve learning some SQL. Don’t stress, SQL is a very intuitive and straight forward language. A more thorough SQL tutorial will follow and please do not hesitate to reach out for help with developing queries. I will now show two methods in how one can query the database.</p>
+<section id="dbqetquery" class="level3">
+<h3 class="anchored" data-anchor-id="dbqetquery">dbQetQuery</h3>
+<p>Using <code>dbQetQuery</code> in the <code>DBI</code> package we can feed the function our database connection <code>conn = ribbitr_connection</code> and then the SQL <code>statement =</code>. Note, the <code>*</code> symbol in SQL is equivalent as saying “everything” and in R that is <code>.</code></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="dv">2</span> <span class="sc">*</span> <span class="dv">2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 4</code></pre>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># location table only</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co"># human speak: "select everthing from the location table"</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>sql_statement <span class="ot">&lt;-</span> <span class="st">"select * from location"</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>location <span class="ot">&lt;-</span> <span class="fu">dbGetQuery</span>(<span class="at">conn =</span> ribbitr_connection, </span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>                       <span class="at">statement =</span> sql_statement)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co"># location and region table joined</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co"># human speak: "select the location column from the location table and the region column from                 the region table then join region onto the location when location table                        location_id equals the region table location_id."</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="co"># note, if you want to select specific columns from a table you must start with table alias, that being either "l" for location or "r" for region. </span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>sql_statement <span class="ot">&lt;-</span> <span class="st">"select l.location, r.region </span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="st">                  from location l</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="st">                  join region r on l.location_id = r.location_id"</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>location_region <span class="ot">&lt;-</span> <span class="fu">dbGetQuery</span>(<span class="at">conn =</span> ribbitr_connection, </span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>                              <span class="at">statement =</span> sql_statement)</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a><span class="co"># picking columns of interest from each table and join all tables together. Try to always select specific columns of interest from each table.</span></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>sql_statement <span class="ot">&lt;-</span> <span class="st">"select l.location, r.region, s.site, s.utme, s.utmn, s.utm_zone,</span></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a><span class="st">                  v.date, v.survey_time, su.start_time, su.end_time, su.duration_minutes,</span></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a><span class="st">                  c.species_capture, c.time_of_capture, c.body_temp_c, c.svl_mm, c.sex</span></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a><span class="st">                  from location l</span></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a><span class="st">                  join region r on l.location_id = r.location_id </span></span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a><span class="st">                  join site s on r.region_id = s.region_id </span></span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a><span class="st">                  join visit v on s.site_id = v.site_id </span></span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a><span class="st">                  join survey su on v.visit_id = su.visit_id </span></span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a><span class="st">                  join capture c on su.survey_id = c.survey_id;"</span></span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>capture_data <span class="ot">&lt;-</span> <span class="fu">dbGetQuery</span>(<span class="at">conn =</span> ribbitr_connection, </span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>                              <span class="at">statement =</span> sql_statement)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+</section>
+<section id="entire-sql-code-chunk" class="level3">
+<h3 class="anchored" data-anchor-id="entire-sql-code-chunk">Entire SQL Code Chunk</h3>
+<p>If you are using a Quarto or RMarkdown document with code chunks you can specify in the code chunk that you will be using SQL, the database connection, and what you want the output variable to be.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">select</span> <span class="op">*</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="kw">from</span> location</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>The <code>echo: false</code> option disables the printing of code (only output is displayed).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">select</span> l.location, r.region, s.site, s.utme, s.utmn, s.utm_zone,</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>v.<span class="dt">date</span>, v.survey_time, su.start_time, su.end_time, su.duration_minutes,</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>c.species_capture, c.time_of_capture, c.body_temp_c, c.svl_mm, c.sex</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="kw">from</span> location l</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="kw">join</span> region r <span class="kw">on</span> l.location_id <span class="op">=</span> r.location_id </span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="kw">join</span> site s <span class="kw">on</span> r.region_id <span class="op">=</span> s.region_id </span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="kw">join</span> visit v <span class="kw">on</span> s.site_id <span class="op">=</span> v.site_id </span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="kw">join</span> survey su <span class="kw">on</span> v.visit_id <span class="op">=</span> su.visit_id </span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="kw">join</span> capture c <span class="kw">on</span> su.survey_id <span class="op">=</span> c.survey_id;</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
 </section>
 </section>
 
