@@ -49,7 +49,7 @@ For example, if you did not have a RDBMS and you had a `wind_speed` table that c
 | A    | 2022-08-12 | 18         |
 | C    | 2022-09-14 | 3          |
 
-Now say you wanted to join those two tables to have one table containing "site", "date", "wind_speed", and "water_temp" you would `water_wind <- left_join(water_temp, wind_speed, by = c("site", "date")` on the unique relationship of "site" and "date". Or in human speak, when site and date between the two tables equal each other place the "water_temp" row in the table. With a RDBMS the creation of primary and foreign keys maintains the unique relationship of "site" and "date" between the two tables.
+Now say you wanted to join those two tables to have one table containing "site", "date", "wind_speed", and "water_temp" you would `water_wind <- inner_join(water_temp, wind_speed, by = c("site", "date")` on the unique relationship of "site" and "date". Or in human speak, when site and date between the two tables equal each other place the "water_temp" row in the table. With a RDBMS the creation of primary and foreign keys maintains the unique relationship of "site" and "date" between the two tables.
 
 \newpage
 
@@ -73,7 +73,7 @@ When looking at the `location` table and the `region` table within the `survey_d
 
 ![](images/image-1359522731.png){width="450"}
 
-To join these two table we would join the `location` table primary key (location_id) to the `region` table foreign key (location_id). In RStudio, `location_region <- left_join(location, region, by = c("location_id")`
+To join these two table we would join the `location` table primary key (location_id) to the `region` table foreign key (location_id). In RStudio, `location_region <- inner_join(location, region, by = c("location_id")`
 
 ![](images/image-2002484305.png)
 
